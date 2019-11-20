@@ -45,7 +45,7 @@ Output is stored in a dataset. Each item is information about a company. Example
 ### Compute units consumption
 Keep in mind that it is much more efficient to run one longer scrape (at least one minute) than more shorter ones because of the startup time.
 
-The average consumption is **1 Compute unit for 1000 actor pages** scraped
+The average consumption is **1.15 Compute units for 200 company pages** scraped
 
 ### Extend output function
 
@@ -92,4 +92,5 @@ This example will add a new field `image`, change the `title` field and remove t
 ```
 
 ### Epilogue
-Thank you for trying my actor. I will be very glad for a feedback that you can send to my email `petr.cermak@apify.com`. If you find any bug, please create an issue on the [Github page](https://github.com/cermak-petr/actor-firmy-cz-scraper).
+Thank you for trying my actor. I will be very glad for a feedback that you can send to my email `petr.cermak@apify.com`.  
+If you find any bug, please create an issue on the [Github page](https://github.com/cermak-petr/actor-firmy-cz-scraper).
