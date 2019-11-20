@@ -137,6 +137,27 @@ Apify.main(async () => {
                 '#debug': Apify.utils.createRequestDebugInfo(request),
             });
         },
+        
+        gotoFunction: async function({ page, request, puppeteerPool }){
+            try{
+                await page.setJavaScriptEnabled(false)
+                await page.setRequestInterception(true);
+                page.on('request', (req) => {
+                    if( req.resourceType() == 'stylesheet' || 
+                        req.resourceType() == 'font' || 
+                        req.resourceType() == 'image' || 
+                        req.resourceType() === 'script' ){
+                        req.abort();
+                    }
+                    else{req.continue();}
+                });
+                return await Apify.utils.puppeteer.gotoExtended(page, request, { timeout: this.gotoTimeoutMillis });
+            }
+            catch(e){
+                //await puppeteerPool.retire(page.browser());
+                throw e.message;
+            }
+        },
 
         maxRequestRetries: 3
     });
