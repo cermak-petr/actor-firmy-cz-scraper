@@ -140,7 +140,7 @@ Apify.main(async () => {
         
         gotoFunction: async function({ page, request, puppeteerPool }){
             try{
-                await page.setJavaScriptEnabled(false)
+                //await page.setJavaScriptEnabled(false)
                 await page.setRequestInterception(true);
                 page.on('request', (req) => {
                     if( req.resourceType() == 'stylesheet' || 
