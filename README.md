@@ -92,5 +92,5 @@ This example will add a new field `image`, change the `title` field and remove t
 ```
 
 ### Epilogue
-Thank you for trying my actor. I will be very glad for a feedback that you can send to my email `petr.cermak@apify.com`.  
+Thank you for trying my actor. You can send any feedback you have to my email `petr.cermak@apify.com`.  
 If you find any bug, please create an issue on the [Github page](https://github.com/cermak-petr/actor-firmy-cz-scraper).
