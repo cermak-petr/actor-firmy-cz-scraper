@@ -1,12 +1,10 @@
-// This is the main Node.js source code file of your actor.
-// It is referenced from the "scripts" section of the package.json file,
-// so that it can be started by running "npm start".
-
 // Include Apify SDK. For more information, see https://sdk.apify.com/
 const Apify = require('apify');
 
+// Checking if passed value is an object
 const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
+// Company page data extraction
 const extractData = () => {
     const title = $('[itemprop="name"]').text().trim();
     const address = $('[itemprop="address"]').text().trim();
@@ -44,6 +42,7 @@ Apify.main(async () => {
     const dataset = await Apify.openDataset();
     let itemCount = (await dataset.getInfo()).cleanItemCount;
 
+    // Parse extendOutpusFunction
     let extendOutputFunction;
     try {
         extendOutputFunction = eval(input.extendOutputFunction);
@@ -79,13 +78,17 @@ Apify.main(async () => {
 
         // This function is called for every page the crawler visits
         handlePageFunction: async ({ request, page }) => {
-            if(request.url.includes('/detail/')){                
+            if(request.url.includes('/detail/')){
+                // Process detail page
+                
+                // Extract data
                 try{await page.waitFor('[itemprop="ratingCount"]');}
                 catch(e){console.log('No rating count found.');}
                 await Apify.utils.puppeteer.injectJQuery(page);
                 const myResult = await page.evaluate(extractData);
                 myResult.url = request.url;
 
+                // Extract extended data
                 let userResult = {};
                 try {
                     await page.evaluate(`window.eoFn = ${input.extendOutputFunction};`);
@@ -102,12 +105,16 @@ Apify.main(async () => {
                     console.log(`extendOutputFunction crashed! Pushing default output. Please fix your function if you want to update the output. Error: ${e}`);
                 }
 
+                // Check extended data
                 if (!isObject(userResult)) {
                     console.log('extendOutputFunction has to return an object!');
                     process.exit(1);
                 }
+                
+                // Merge basic and extended data
                 const result = Object.assign(myResult, userResult);
 
+                // Return result and check if maximum count has been reached
                 await dataset.pushData(result);
                 if(input.maxItems && ++itemCount >= input.maxItems){
                     console.log('Maximum item count reached, finishing...');
@@ -115,6 +122,9 @@ Apify.main(async () => {
                 }
             }
             else{
+                // Process other pages
+                
+                // Enqueue sub-pages
                 try{await page.waitFor(pageSelector);}
                 catch(e){console.log('No sub-pages found.');}
                 await Apify.utils.enqueueLinks({ 
@@ -135,6 +145,7 @@ Apify.main(async () => {
             });
         },
         
+        // This function is called every time the crawler is supposed to go to a new page
         gotoFunction: async function({ page, request, puppeteerPool }){
             try{
                 await page.setRequestInterception(true);
