@@ -1,0 +1,34 @@
+{
+    "title": "Firmy.cz actor input schema",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "startURLs": {
+            "title": "Start URLs",
+            "type": "array",
+            "editor": "requestListSources",
+            "description": "List of URLs that will be scraped or crawled. Can be main website URL, category/search URLs or detail/product URLs."
+        },
+        "maxItems": {
+            "title": "Max items",
+            "type": "integer",
+            "minimum": 1,
+            "description": "Limit of detail/product pages to be scraped"
+        },
+        "extendOutputFunction": {
+            "title": "Extend output function",
+            "type": "string",
+            "editor": "javascript",
+            "description": "A function which result will get merged with the default result",
+            "prefill": "($) => {\n    const result = {};\n    // Uncomment to add a title to the output\n    // result.title = $('title').text().trim();\n\n    return result;\n}",
+            "sectionCaption": "Advanced options"
+        },
+        "proxyConfiguration": {
+            "title": "Proxy configuration",
+            "type": "object",
+            "editor": "proxy",
+            "description": "The best option is usually Automatic proxy. But you can also use your own proxies or no proxy",
+            "prefill": { "useApifyProxy": true }
+        }
+    }
+}
