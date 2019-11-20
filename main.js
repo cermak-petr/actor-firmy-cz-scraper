@@ -145,7 +145,7 @@ Apify.main(async () => {
                     if( req.resourceType() == 'stylesheet' || 
                         req.resourceType() == 'font' || 
                         req.resourceType() == 'image' || 
-                        req.resourceType() === 'script' ){
+                        //req.resourceType() === 'script' ){
                         req.abort();
                     }
                     else{req.continue();}
