@@ -4,7 +4,6 @@
 
 // Include Apify SDK. For more information, see https://sdk.apify.com/
 const Apify = require('apify');
-const log = Apify.log;
 
 const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
@@ -84,7 +83,7 @@ Apify.main(async () => {
         handlePageFunction: async ({ request, page }) => {
             if(request.url.includes('/detail/')){                
                 try{await page.waitFor('[itemprop="ratingCount"]');}
-                catch(e){log.info('No rating count found.');}
+                catch(e){console.log('No rating count found.');}
                 await Apify.utils.puppeteer.injectJQuery(page);
                 const myResult = await page.evaluate(extractData);
                 myResult.url = request.url;
@@ -119,7 +118,7 @@ Apify.main(async () => {
             }
             else{
                 try{await page.waitFor(pageSelector);}
-                catch(e){log.info('No sub-pages found.');}
+                catch(e){console.log('No sub-pages found.');}
                 await Apify.utils.enqueueLinks({ 
                     page,
                     selector: pageSelector,
