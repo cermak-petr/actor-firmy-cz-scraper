@@ -8,20 +8,18 @@ const Apify = require('apify');
 const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
 const extractData = () => {
-    const $ = selector => document.querySelector(selector);
-    const $$ = selector => Array.from(document.querySelectorAll(selector));
-    const title = $('[itemprop="name"]').textContent.trim();
-    const address = $('[itemprop="address"]').textContent.trim();
-    const lat = $('[itemprop="latitude"]').getAttribute('content');
-    const lon = $('[itemprop="longitude"]').getAttribute('content');
-    const desc = $('[itemprop="description"]').textContent.trim();
-    const categories = $$('.category').map(c => c.textContent.trim());
-    const rating = $('[itemprop="ratingValue"]').getAttribute('content');
-    const rCount = $('[itemprop="ratingCount"]').textContent.trim();
+    const title = $('[itemprop="name"]').text().trim();
+    const address = $('[itemprop="address"]').text().trim();
+    const lat = $('[itemprop="latitude"]').attr('content');
+    const lon = $('[itemprop="longitude"]').attr('content');
+    const desc = $('[itemprop="description"]').text().trim();
+    const categories = $('.category').toArray().map(c => c.textContent.trim());
+    const rating = $('[itemprop="ratingValue"]').attr('content');
+    const rCount = $('[itemprop="ratingCount"]').text().trim();
     const ratingCount = rCount ? parseInt(rCount) : 0;
-    const phone = $('[itemprop="telephone"]').textContent.trim();
-    const emails = $$('.companyMail').map(e => e.textContent.trim());
-    const websites = $$('.companyUrl').map(e => e.textContent.trim());
+    const phone = $('[itemprop="telephone"]').text().trim();
+    const emails = $('.companyMail').toArray().map(e => e.textContent.trim());
+    const websites = $('.companyUrl').toArray().map(e => e.textContent.trim());
     const result = {
         "title": title,
         "address": address.replace(/[\n\t]+/g, ''),
@@ -139,23 +137,18 @@ Apify.main(async () => {
         
         gotoFunction: async function({ page, request, puppeteerPool }){
             try{
-                //await page.setJavaScriptEnabled(false)
                 await page.setRequestInterception(true);
                 page.on('request', (req) => {
                     if( req.resourceType() == 'stylesheet' || 
                         req.resourceType() == 'font' || 
-                        req.resourceType() == 'image' /*|| 
-                        req.resourceType() === 'script'*/ ){
+                        req.resourceType() == 'image'){
                         req.abort();
                     }
                     else{req.continue();}
                 });
                 return await Apify.utils.puppeteer.gotoExtended(page, request, { timeout: this.gotoTimeoutMillis });
             }
-            catch(e){
-                //await puppeteerPool.retire(page.browser());
-                throw e.message;
-            }
+            catch(e){throw e;}
         },
 
         maxRequestRetries: 3
