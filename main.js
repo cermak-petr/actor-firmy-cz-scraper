@@ -88,7 +88,7 @@ Apify.main(async () => {
 
     // Define a pattern of URLs that the crawler should visit
     const itemSelector = 'a.companyTitle';
-    const pageSelector = 'a.imgLink, a.btnExtendPage';
+    const pageSelector = 'a.imgLink, #nextBtn';
     const pseudoUrls = [new Apify.PseudoUrl('https://www.firmy.cz/[.+]')];
 
     // Create a crawler that will use headless Chrome / Puppeteer to extract data
