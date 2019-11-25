@@ -1,6 +1,18 @@
 // Include Apify SDK. For more information, see https://sdk.apify.com/
 const Apify = require('apify');
 
+/**
+ * Gets attribute as text from a ElementHandle.
+ * @param {ElementHandle} element - The element to get attribute from.
+ * @param {string} attr - Name of the attribute to get.
+ */
+const getAttribute = async (element, attr) => {
+    try {
+        const prop = await element.getProperty(attr);
+        return (await prop.jsonValue()).trim();
+    } catch (e) { return null; }
+};
+
 // Checking if passed value is an object
 const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
@@ -54,16 +66,29 @@ Apify.main(async () => {
     }
 
     // Open a request queue and request list
+    let hasUrls = false;
     let requestList = null;
     const requestQueue = await Apify.openRequestQueue();
     if(input.startURLs){
+        console.log('Enqueuing startUrls...');
         requestList = new Apify.RequestList({ sources: input.startURLs });
-        await requestList.initialize();  
+        await requestList.initialize(); 
+        hasUrls = true;
     }
-    else{await requestQueue.addRequest({ url: 'https://www.firmy.cz/' });}
+    if(input.search && input.search.length > 0){
+        console.log('Enqueuing query search...');
+        const query = input.search.replace(/\s/g, '+');
+        await requestQueue.addRequest({ url: 'https://www.firmy.cz/?q=' + query });
+        hasUrls = true;
+    }
+    if(!hasUrls){
+        console.log('No search or startUrls provided, scraping the whole site...');
+        await requestQueue.addRequest({ url: 'https://www.firmy.cz/' });
+    }
 
     // Define a pattern of URLs that the crawler should visit
-    const pageSelector = 'a.imgLink, a.companyTitle, a.btnExtendPage';
+    const itemSelector = 'a.companyTitle';
+    const pageSelector = 'a.imgLink, a.btnExtendPage';
     const pseudoUrls = [new Apify.PseudoUrl('https://www.firmy.cz/[.+]')];
 
     // Create a crawler that will use headless Chrome / Puppeteer to extract data
@@ -127,12 +152,20 @@ Apify.main(async () => {
                 // Enqueue sub-pages
                 try{await page.waitFor(pageSelector);}
                 catch(e){console.log('No sub-pages found.');}
-                await Apify.utils.enqueueLinks({ 
-                    page,
-                    selector: pageSelector,
-                    pseudoUrls,
-                    requestQueue
-                });
+                const links = await page.$$(pageSelector);
+                for(const link of links){
+                    const url = await getAttribute(link, 'href');
+                    await requestQueue.addRequest(url);
+                }
+                
+                // Enqueue company details
+                try{await page.waitFor(itemSelector);}
+                catch(e){console.log('No company detail links found.');}
+                const links = await page.$$(itemSelector);
+                for(const link of links){
+                    const url = await getAttribute(link, 'href');
+                    await requestQueue.addRequest(url, {forefront: true});
+                }
             }
         },
 
