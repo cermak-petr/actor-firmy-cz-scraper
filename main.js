@@ -152,8 +152,8 @@ Apify.main(async () => {
                 // Enqueue sub-pages
                 try{await page.waitFor(pageSelector);}
                 catch(e){console.log('No sub-pages found.');}
-                const links = await page.$$(pageSelector);
-                for(const link of links){
+                const pageLinks = await page.$$(pageSelector);
+                for(const link of pageLinks){
                     const url = await getAttribute(link, 'href');
                     await requestQueue.addRequest(url);
                 }
@@ -161,8 +161,8 @@ Apify.main(async () => {
                 // Enqueue company details
                 try{await page.waitFor(itemSelector);}
                 catch(e){console.log('No company detail links found.');}
-                const links = await page.$$(itemSelector);
-                for(const link of links){
+                const itemLinks = await page.$$(itemSelector);
+                for(const link of itemLinks){
                     const url = await getAttribute(link, 'href');
                     await requestQueue.addRequest(url, {forefront: true});
                 }
