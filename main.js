@@ -162,7 +162,7 @@ Apify.main(async () => {
                 try{await page.waitFor(itemSelector);}
                 catch(e){console.log('No company detail links found.');}
                 const itemLinks = await page.$$(itemSelector);
-                for(const link of itemLinks){
+                for(const link of itemLinks.reverse()){
                     const url = await getAttribute(link, 'href');
                     await requestQueue.addRequest({url}, {forefront: true});
                 }
