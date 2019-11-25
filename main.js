@@ -155,7 +155,7 @@ Apify.main(async () => {
                 const pageLinks = await page.$$(pageSelector);
                 for(const link of pageLinks){
                     const url = await getAttribute(link, 'href');
-                    await requestQueue.addRequest(url);
+                    await requestQueue.addRequest({url});
                 }
                 
                 // Enqueue company details
@@ -164,7 +164,7 @@ Apify.main(async () => {
                 const itemLinks = await page.$$(itemSelector);
                 for(const link of itemLinks){
                     const url = await getAttribute(link, 'href');
-                    await requestQueue.addRequest(url, {forefront: true});
+                    await requestQueue.addRequest({url}, {forefront: true});
                 }
             }
         },
