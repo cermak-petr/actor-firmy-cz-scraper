@@ -11,6 +11,7 @@ Firmy.cz Scraper is an [Apify actor](https://apify.com/actors) for extracting da
 
 | Field | Type | Description | Default value
 | ----- | ---- | ----------- | -------------|
+| search | string | Query string to be searched on the site | none, full site will be scraped |
 | startUrls | array | List of [Request](https://sdk.apify.com/docs/api/request#docsNav) objects that will be deeply crawled. The URL can be top level like `https://www.firmy.cz`, any category URL or company detail URL | `[{ "url": "https://www.firmy.cz" }]`|
 | maxItems | number | Maximum number of actor pages that will be scraped | all found |
 | extendOutputFunction | string | Function that takes a JQuery handle ($) as argument and returns data that will be merged with the default output. More information in [Extend output function](#extend-output-function) | |
