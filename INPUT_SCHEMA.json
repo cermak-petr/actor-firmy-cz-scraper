@@ -18,6 +18,7 @@
             "title": "Max items",
             "type": "integer",
             "minimum": 1,
+            "prefill": 20,
             "description": "Limit of detail/product pages to be scraped"
         },
         "extendOutputFunction": {
