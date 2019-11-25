@@ -3,6 +3,11 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
+        "search": {
+            "title": "Search",
+            "type": "string",
+            "description": "Query to search on Firmy.cz"
+        },
         "startURLs": {
             "title": "Start URLs",
             "type": "array",
