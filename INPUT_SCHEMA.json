@@ -6,6 +6,7 @@
         "search": {
             "title": "Search",
             "type": "string",
+            "editor": "textfield",
             "description": "Query to search on Firmy.cz"
         },
         "startURLs": {
