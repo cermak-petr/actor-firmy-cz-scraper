@@ -153,12 +153,9 @@ Apify.main(async () => {
                 try{await page.waitFor(itemSelector);}
                 catch(e){console.log('No company detail links found.');}
                 const itemLinks = await page.$$(itemSelector);
-                const urls = [];
                 for(const link of itemLinks){
-                    urls.push(await getAttribute(link, 'href'));
-                }
-                for(const url of urls){
-                    await requestQueue.addRequest({url}, {forefront: true});
+                    const url = await getAttribute(link, 'href');
+                    await requestQueue.addRequest({url});
                 }
                 
                 // Enqueue sub-pages
