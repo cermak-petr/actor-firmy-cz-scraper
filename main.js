@@ -155,12 +155,10 @@ Apify.main(async () => {
                 const itemLinks = await page.$$(itemSelector);
                 for(const link of itemLinks){
                     const url = await getAttribute(link, 'href');
-                    await page.waitFor(300);
                     await requestQueue.addRequest({url});
                 }
                 
                 // Enqueue sub-pages
-                await page.waitFor(1000);
                 try{await page.waitFor(pageSelector);}
                 catch(e){console.log('No sub-pages found.');}
                 const pageLinks = await page.$$(pageSelector);
