@@ -93,7 +93,7 @@ This example will add a new field `image`, change the `title` field and remove t
 }
 ```
 
-## Results ordering
+### Results ordering
 Due to the crawler running in parallel, it is not always 100% possible to preserve the same order of results as they appear on the page. In most cases, the results should contain all expected, but if you need to be 100% sure, set the maximum result count to at least 14 (one search results page).
 
 ### Epilogue
