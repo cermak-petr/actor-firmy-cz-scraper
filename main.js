@@ -149,6 +149,18 @@ Apify.main(async () => {
             else{
                 // Process other pages
                 
+                // Enqueue company details
+                try{await page.waitFor(itemSelector);}
+                catch(e){console.log('No company detail links found.');}
+                const itemLinks = await page.$$(itemSelector);
+                const urls = [];
+                for(const link of itemLinks){
+                    urls.push(await getAttribute(link, 'href'));
+                }
+                for(const url of urls){
+                    await requestQueue.addRequest({url}, {forefront: true});
+                }
+                
                 // Enqueue sub-pages
                 try{await page.waitFor(pageSelector);}
                 catch(e){console.log('No sub-pages found.');}
@@ -156,18 +168,6 @@ Apify.main(async () => {
                 for(const link of pageLinks){
                     const url = await getAttribute(link, 'href');
                     await requestQueue.addRequest({url});
-                }
-                
-                // Enqueue company details
-                try{await page.waitFor(itemSelector);}
-                catch(e){console.log('No company detail links found.');}
-                const itemLinks = await page.$$(itemSelector);
-                const urls = [];
-                for(const link of itemLinks.reverse()){
-                    urls.push(await getAttribute(link, 'href'));
-                }
-                for(const url of urls){
-                    await requestQueue.addRequest({url}, {forefront: true});
                 }
             }
         },
