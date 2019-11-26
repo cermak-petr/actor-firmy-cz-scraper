@@ -6,6 +6,7 @@ Firmy.cz Scraper is an [Apify actor](https://apify.com/actors) for extracting da
 - [Output](#output)
 - [Compute units consumption](#compute-units-consumption)
 - [Extend output function](#extend-output-function)
+- [Results ordering](#results-ordering)
 
 ### Input
 
@@ -91,6 +92,9 @@ This example will add a new field `image`, change the `title` field and remove t
     "image": "https://d48-a.sdn.cz/d_48/c_img_E_G/wBmPnX.png?fl=res,600,400,3,ffffff"
 }
 ```
+
+## Results ordering
+Due to the crawler running in parallel, it is not always 100% possible to preserve the same order of results as they appear on the page. In most cases, the results should contain all expected, but if you need to be 100% sure, set the maximum result count to at least 14 (one search results page).
 
 ### Epilogue
 Thank you for trying my actor. You can send any feedback you have to my email `petr.cermak@apify.com`.  
