@@ -181,15 +181,7 @@ Apify.main(async () => {
         // This function is called every time the crawler is supposed to go to a new page
         gotoFunction: async function({ page, request, puppeteerPool }){
             try{
-                await page.setRequestInterception(true);
-                page.on('request', (req) => {
-                    if( req.resourceType() == 'stylesheet' || 
-                        req.resourceType() == 'font' || 
-                        req.resourceType() == 'image'){
-                        req.abort();
-                    }
-                    else{req.continue();}
-                });
+                await Apify.utils.puppeteer.blockRequests(page);
                 return await Apify.utils.puppeteer.gotoExtended(page, request, { timeout: this.gotoTimeoutMillis });
             }
             catch(e){throw e;}
